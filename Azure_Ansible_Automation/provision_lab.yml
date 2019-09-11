@@ -1,0 +1,66 @@
+- name: Perform Checks to make sure this Playbook will complete successfully
+  hosts: localhost
+  connection: local
+  become: no
+  gather_facts: no
+  tasks:
+    - name: make sure we are running correct Ansible Version
+      assert:
+        that:
+          - ansible_version.major >= 2
+          - ansible_version.minor >= 8
+
+    - name: auto license feature for Ansible Tower
+      block:
+        - name: Check that the provided license exists
+          stat:
+            path: "{{playbook_dir}}/tower_license.json"
+          register: stat_result
+        - debug:
+            var: stat_result
+        - fail:
+            msg: "autolicense is turned on, but we need a license located at {{playbook_dir}}/tower_license.json"
+          when:
+           - not stat_result.stat.exists
+      when:
+       - autolicense is defined
+       - autolicense
+
+- name: Create lab instances in Azure
+  hosts: localhost
+  connection: local
+  become: no
+  gather_facts: no
+  roles:
+    - manage_azure_instances
+
+- name: wait for all nodes to have SSH reachability
+  hosts: control_nodes
+  become: yes
+  gather_facts: no
+  roles:
+    - connectivity_test
+
+- name: Configure common options on control nodes
+  hosts: control_nodes
+  gather_facts: no
+  become: yes
+  roles:
+    - user_accounts
+    - common
+
+- name: CONFIGURE CONTROL NODE
+  hosts: control_nodes
+  gather_facts: no
+  become: yes
+  roles:
+    - control_node
+
+- name: Configure software on nodes
+  become: yes
+  gather_facts: yes
+  hosts: control_nodes
+  roles:
+    - { role: nodejs }
+    - { role: wetty }
+    - { role: zsh }

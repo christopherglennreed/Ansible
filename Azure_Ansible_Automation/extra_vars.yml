@@ -1,0 +1,14 @@
+---
+azure_region: eastus                   # region where the nodes will live
+azure_name_prefix: DeerFishMonkey      # name prefix for all the VMs
+student_total: 1                       # creates student_total of workbenches for the workshop
+domain_name: eastus.cloudapp.azure.com
+azure_subscription_id: 171cb7cb-0b56-4861-b7a7-d7cfad50be90
+azure_client_id: 1c57ab37-14e2-4b99-9005-697ddb144294
+azure_client_secret: 67631edf-248d-4c06-8431-d21dbae9866d
+azure_tenant_id: e09fe7ba-2840-4126-b83e-6f8622172287
+#OPTIONAL VARIABLES
+admin_password: R3dH4t123!                # password for Ansible control node, defaults to ansible
+towerinstall: true                     # automatically installs Tower to control node
+autolicense: false                     # automatically licenses Tower if license is provided
+

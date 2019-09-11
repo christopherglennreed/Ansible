@@ -1,0 +1,43 @@
+---
+azure_name_prefix: TRAINING
+azure_region: eastus
+azure_wait: yes
+#need to circle back and fix this for teardown - sean
+azure_az: "{{azure_region}}"
+azure_subnet: "172.16.0.0/16"
+azure_subnet2: "172.17.0.0/16"
+networking: false
+ssh_port: 22
+
+azure_control_node:
+  ansible: rhel7-tower
+
+azure_instance_types:
+  rhel7:
+    vm_size: Standard_B1s
+    offer: RHEL
+    publisher: RedHat
+    sku: '7-RAW'
+    version: latest
+    os_disk_size: 10
+
+  rhel7-tower:
+    vm_size: Standard_B2s
+    offer: RHEL
+    publisher: RedHat
+    sku: '7-RAW'
+    version: latest
+    os_disk_size: 20
+
+# Login names used for SSH connections. These are baked in to the AMIs.
+azure_login_names:
+  rhel7-tower: azure-user
+  rhel7: azure-user
+  centos7-tower: centos
+  centos7: centos
+  ubuntu14: ubuntu
+  ubuntu16: ubuntu
+  csr-byol: azure-user
+  junos-byol: jnpr
+  f5-prelicensed: admin
+  f5_hosts: azure-user

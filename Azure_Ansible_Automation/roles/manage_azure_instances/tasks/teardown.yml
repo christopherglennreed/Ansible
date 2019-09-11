@@ -1,0 +1,34 @@
+# - name: grab facts for workshop
+#   azure_rm_virtualmachine_facts:
+#     resource_group: "{{azure_name_prefix}}"
+#     tags:
+#       - Workshop
+#   register: all_workshop_nodes
+#
+# - name: debug test
+#   debug:
+#     var: all_workshop_nodes
+
+- name: Destroy Azure Resource Group
+  azure_rm_resourcegroup:
+    name: "{{azure_name_prefix}}"
+    location: "{{azure_region}}"
+    state: absent
+    force: yes
+
+- name: Destroy Student Resource Groups
+  azure_rm_resourcegroup:
+    name: "Student{{item}}"
+    location: "{{azure_region}}"
+    state: absent
+    force: yes
+  with_sequence: start=1 end="{{ student_total }}"
+
+- name: Destroy Student Azure Users
+  azure_ad_users:
+    user_name: "Student{{ item }}"
+    state: absent
+    tenant_domain: "snxcsp.onmicrosoft.com"
+    client_id: "{{ azure_client_id }}"
+    client_secret: "{{ azure_client_secret }}"
+  with_sequence: start=1 end="{{ student_total }}"

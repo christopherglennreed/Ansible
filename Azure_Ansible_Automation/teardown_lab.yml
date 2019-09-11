@@ -1,0 +1,17 @@
+- name: Destroy lab instances in Azure
+  hosts: localhost
+  connection: local
+  become: no
+  gather_facts: no
+
+  vars:
+    teardown: true
+    state: absent
+
+  tasks:
+    - { include_role: {name: manage_azure_instances}}
+
+    - name: Remove workshop local files
+      file:
+        dest: "{{ playbook_dir }}/{{ azure_name_prefix }}*"
+        state: absent
